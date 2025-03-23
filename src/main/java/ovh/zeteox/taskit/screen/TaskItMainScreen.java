@@ -41,7 +41,8 @@ public class TaskItMainScreen extends Screen {
                         (width-89)/2,
                         (height/2)-73+pos,
                         this.textRenderer,
-                        this);
+                        this,
+                        task);
                 pos+=35;
                 this.addDrawableChild(taskBtn);
             }

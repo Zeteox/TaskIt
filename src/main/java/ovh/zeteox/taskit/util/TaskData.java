@@ -2,9 +2,6 @@ package ovh.zeteox.taskit.util;
 
 import net.minecraft.nbt.*;
 import ovh.zeteox.taskit.tasks.Task;
-import ovh.zeteox.taskit.tasks.TaskTypes;
-
-import java.util.List;
 
 public class TaskData {
 

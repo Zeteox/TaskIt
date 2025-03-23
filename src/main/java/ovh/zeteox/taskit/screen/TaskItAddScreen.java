@@ -54,7 +54,6 @@ public class TaskItAddScreen extends TaskItMainScreen {
                             0,
                             false,
                             false);
-                    MinecraftClient.getInstance().player.sendMessage(Text.of("----- Added Task -----"), false);
                     TaskData.addTask( (IEntityDataSaver) MinecraftClient.getInstance().player, task);
                     this.parent.init(MinecraftClient.getInstance(), this.width, this.height);
                     MinecraftClient.getInstance().setScreen(this.parent);

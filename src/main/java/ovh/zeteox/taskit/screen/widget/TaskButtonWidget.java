@@ -1,12 +1,11 @@
 package ovh.zeteox.taskit.screen.widget;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.Font;
-import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ovh.zeteox.taskit.TaskIt;
@@ -16,7 +15,7 @@ public class TaskButtonWidget extends TexturedButtonWidget {
     private static final Identifier BUTTON_TEXTURE = new Identifier(TaskIt.MOD_ID, "textures/gui/main_gui.png");
     private final TextRenderer textRenderer;
 
-    public TaskButtonWidget(String text, int x, int y, TextRenderer textRenderer, Screen screen) {
+    public TaskButtonWidget(String text, int x, int y, TextRenderer textRenderer, Screen screen, NbtCompound task) {
         super(
                 x,
                 y,
@@ -29,7 +28,7 @@ public class TaskButtonWidget extends TexturedButtonWidget {
                 256,
                 256,
                 (btn) -> {
-                    MinecraftClient.getInstance().setScreen(new TaskItDescriptionScreen(Text.of("TaskIt Desc"), screen));
+                    MinecraftClient.getInstance().setScreen(new TaskItDescriptionScreen(Text.of("TaskIt Desc"), screen, task));
                 },
                 Text.of(text));
 
