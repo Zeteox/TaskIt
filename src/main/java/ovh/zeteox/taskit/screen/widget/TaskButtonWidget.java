@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ovh.zeteox.taskit.TaskIt;
+import ovh.zeteox.taskit.screen.TaskItDescriptionScreen;
 
 public class TaskButtonWidget extends TexturedButtonWidget {
     private static final Identifier BUTTON_TEXTURE = new Identifier(TaskIt.MOD_ID, "textures/gui/main_gui.png");
@@ -28,7 +29,7 @@ public class TaskButtonWidget extends TexturedButtonWidget {
                 256,
                 256,
                 (btn) -> {
-                    MinecraftClient.getInstance().setScreen(screen);
+                    MinecraftClient.getInstance().setScreen(new TaskItDescriptionScreen(Text.of("TaskIt Desc"), screen));
                 },
                 Text.of(text));
 
