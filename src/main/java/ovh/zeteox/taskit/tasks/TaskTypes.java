@@ -3,7 +3,7 @@ package ovh.zeteox.taskit.tasks;
 import net.minecraft.text.Text;
 
 public enum TaskTypes {
-    MINING,
+    BREAKING,
     PLANTING,
     EATING,
     CUSTOM;

@@ -23,7 +23,7 @@ public class BlockMixin {
         if (world.isClient) {
             List<Task> tasks = ModClientConfig.getTasks();
             for (Task task : tasks) {
-                if (task.getTaskType() == TaskTypes.MINING) {
+                if (task.getTaskType() == TaskTypes.BREAKING) {
                     task.addNumber(1);
                 }
                 ModClientConfig.updateTasks(tasks);

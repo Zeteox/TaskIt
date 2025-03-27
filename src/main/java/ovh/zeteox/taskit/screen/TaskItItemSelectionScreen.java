@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import ovh.zeteox.taskit.tasks.TaskTypes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,17 +22,16 @@ public class TaskItItemSelectionScreen extends TaskItMainScreen {
     private Item selectedItem;
     private final Runnable onItemSelected;
 
-    public TaskItItemSelectionScreen(Text title, Screen parent, Runnable onItemSelected) {
+    public TaskItItemSelectionScreen(Text title, Screen parent, TaskTypes taskTypes, Runnable onItemSelected) {
         super(title, parent, 0);
         this.onItemSelected = onItemSelected;
         populateItems();
     }
 
     private void populateItems() {
-        Registries.BLOCK.forEach(block -> {
-            Item item = block.asItem();
+        Registries.ITEM.forEach(item -> {
             if (!item.equals(Items.AIR) && !availableItems.contains(item)) {
-                availableItems.add(block.asItem());
+                availableItems.add(item);
             }
         });
     }

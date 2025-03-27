@@ -1,9 +1,12 @@
 package ovh.zeteox.taskit.screen;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +18,7 @@ import java.util.Objects;
 
 public class TaskItAddScreen extends TaskItMainScreen {
     private TaskTypes selectedTaskType = TaskTypes.CUSTOM;
-    private Item selectedItem;
+    private Item selectedItem = Items.BARRIER;
     private TaskItItemSelectionScreen selectionScreen;
     private static final Logger log = LoggerFactory.getLogger(TaskItAddScreen.class);
 
@@ -44,17 +47,17 @@ public class TaskItAddScreen extends TaskItMainScreen {
         this.addDrawableChild(taskTypeWidget);
 
         ButtonWidget selectItemBtn = ButtonWidget.builder(Text.of("Select Item"), (btn) -> {
-            this.selectionScreen = new TaskItItemSelectionScreen(Text.of("Select Item"), this, () -> {
+            this.selectionScreen = new TaskItItemSelectionScreen(Text.of("Select Item"), this, this.selectedTaskType,() -> {
                 this.selectedItem = this.selectionScreen.getSelectedItem();
             });
             MinecraftClient.getInstance().setScreen(selectionScreen);
-        }).dimensions(width / 2 - 42, this.height / 4 + 94, 84, 20).build();
+        }).dimensions(width / 2 - 43, this.height / 4 + 63, 86, 20).build();
         this.addDrawableChild(selectItemBtn);
 
         TextFieldWidget numberToDoWidget = new TextFieldWidget(
                 this.textRenderer,
                 (width / 2) - 42,
-                this.height / 4 + 64,
+                this.height / 4 + 94,
                 84,
                 15,
                 Text.literal("Number"));
@@ -86,5 +89,13 @@ public class TaskItAddScreen extends TaskItMainScreen {
         this.addDrawableChild(taskNameWidget);
         this.addDrawableChild(numberToDoWidget);
         this.addDrawableChild(buttonWidget);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+
+        ItemStack stack = new ItemStack(this.selectedItem);
+        context.drawItem(stack, (width+guiWidth)/2 - 30, this.guiHeight/2 + 17);
     }
 }
