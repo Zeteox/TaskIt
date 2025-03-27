@@ -4,50 +4,33 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import ovh.zeteox.taskit.TaskIt;
+import ovh.zeteox.taskit.config.ModClientConfig;
 import ovh.zeteox.taskit.screen.widget.TaskButtonWidget;
-import ovh.zeteox.taskit.util.IEntityDataSaver;
+import ovh.zeteox.taskit.tasks.Task;
+
+import java.util.List;
 
 public class TaskItMainScreen extends Screen {
-    public Screen parent;
-    public int guiWidth;
-    public int guiHeight;
+    protected Screen parent;
+    protected int guiWidth;
+    protected int guiHeight;
+    protected int pageNumber;
 
     private static final Identifier BACKGROUND_TEXTURE = new Identifier(TaskIt.MOD_ID, "textures/gui/main_gui.png");
 
-    public TaskItMainScreen(Text title, Screen parent) {
+    public TaskItMainScreen(Text title, Screen parent, int pageNumber) {
         super(title);
         this.parent = parent;
         this.guiWidth = 109;
         this.guiHeight = 166;
+        this.pageNumber = pageNumber;
     }
 
     @Override
     protected void init() {
-        NbtCompound nbt = ((IEntityDataSaver) MinecraftClient.getInstance().player).getPersistentData();
-        NbtList tasks = nbt.getList("Tasks", NbtElement.COMPOUND_TYPE);
-        if (!tasks.isEmpty()) {
-            int pos = 10;
-            for (int i = 0; i < tasks.size(); i++) {
-                NbtCompound task = (NbtCompound) tasks.get(i);
-                String taskName = task.getString("name");
-                TaskButtonWidget taskBtn = new TaskButtonWidget(
-                        taskName,
-                        (width-89)/2,
-                        (height/2)-73+pos,
-                        this.textRenderer,
-                        this,
-                        task);
-                pos+=35;
-                this.addDrawableChild(taskBtn);
-            }
-        }
-
         ButtonWidget buttonWidget = ButtonWidget.builder(Text.of("+"), (btn) -> {
             MinecraftClient.getInstance().setScreen(
                     new TaskItAddScreen(Text.of("TaskItAdd"),
@@ -55,6 +38,52 @@ public class TaskItMainScreen extends Screen {
             );
         }).dimensions(((width+guiWidth)/2)+1, ((height+guiHeight)/2)-29, 20, 20).build();
         this.addDrawableChild(buttonWidget);
+
+        ButtonWidget btnNext = ButtonWidget.builder(Text.of(">"), (btn) -> {
+            MinecraftClient.getInstance().setScreen(
+                    new TaskItMainScreen(Text.of("TaskIt"), this.parent, pageNumber+1)
+            );
+        }).dimensions(((width+guiWidth)/2)+1, ((height-guiHeight)/2)+5, 20, 20).build();
+        btnNext.active = false;
+        this.addDrawableChild(btnNext);
+
+        ButtonWidget btnPrev = ButtonWidget.builder(Text.of("<"), (btn) -> {
+            MinecraftClient.getInstance().setScreen(
+                    new TaskItMainScreen(Text.of("TaskIt"), this.parent, pageNumber-1)
+            );
+        }).dimensions(((width+guiWidth)/2)+1, ((height-guiHeight)/2)+25, 20, 20).build();
+        btnPrev.active = false;
+        this.addDrawableChild(btnPrev);
+
+        List<Task> tasks = ModClientConfig.getTasks();
+        if (!tasks.isEmpty()) {
+            int pos = 20;
+            if (tasks.size()-(this.pageNumber*4) > 4) {
+                btnNext.active = true;
+            }
+
+            if (this.pageNumber > 0) {
+                btnPrev.active = true;
+            }
+
+            int cnt = 0;
+            for (int x = (this.pageNumber*4); x < tasks.size(); x++) {
+                Task task = tasks.get(x);
+                TaskButtonWidget taskBtn = new TaskButtonWidget(
+                        task.getTaskName(),
+                        (width-guiWidth)/2+10,
+                        (height-guiHeight)/2+pos,
+                        textRenderer,
+                        TaskItMainScreen.this,
+                        task);
+                pos+=35;
+                cnt++;
+                this.addDrawableChild(taskBtn);
+                if (cnt == 4) {
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -64,6 +93,14 @@ public class TaskItMainScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        //BACKGROUND
+        context.drawTexture(
+                BACKGROUND_TEXTURE,
+                (width-guiWidth)/2,
+                (height-guiHeight)/2,
+                0,0,
+                guiWidth,guiHeight);
+
         //TEXT
         context.drawText(
                 this.textRenderer,
@@ -80,14 +117,6 @@ public class TaskItMainScreen extends Screen {
                 0xFFFFFFFF,
                 true);
 
-        //BACKGROUND
-        context.drawTexture(
-                BACKGROUND_TEXTURE,
-                (width-guiWidth)/2,
-                (height-guiHeight)/2,
-                0,0,
-                guiWidth,guiHeight);
-
         //RENDER BUTTONS
         super.render(context, mouseX, mouseY, delta);
     }
@@ -96,5 +125,4 @@ public class TaskItMainScreen extends Screen {
     public void close() {
         this.client.setScreen(this.parent);
     }
-
 }

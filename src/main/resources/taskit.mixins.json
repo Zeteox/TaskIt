@@ -3,7 +3,10 @@
   "package": "ovh.zeteox.taskit.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ModEntityDataSaverMixin"
+    "AnimalEntityMixin",
+    "BlockMixin",
+    "ItemMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

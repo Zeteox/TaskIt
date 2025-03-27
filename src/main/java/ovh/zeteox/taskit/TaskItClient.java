@@ -9,12 +9,15 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+import ovh.zeteox.taskit.config.ModClientConfig;
 import ovh.zeteox.taskit.screen.TaskItMainScreen;
 
 public class TaskItClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ModClientConfig.loadConfig();
+
         KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "Open Tasks",
                 InputUtil.Type.KEYSYM,
@@ -26,7 +29,7 @@ public class TaskItClient implements ClientModInitializer {
             while (keyBinding.wasPressed()) {
                 Screen currentScreen = MinecraftClient.getInstance().currentScreen;
                 MinecraftClient.getInstance().setScreen(
-                        new TaskItMainScreen(Text.of("TaskIt"), currentScreen)
+                        new TaskItMainScreen(Text.of("TaskIt"), currentScreen, 0)
                 );
             }
         });

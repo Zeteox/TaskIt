@@ -2,24 +2,26 @@ package ovh.zeteox.taskit.screen;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ovh.zeteox.taskit.config.ModClientConfig;
 import ovh.zeteox.taskit.tasks.Task;
 import ovh.zeteox.taskit.tasks.TaskTypes;
-import ovh.zeteox.taskit.util.IEntityDataSaver;
-import ovh.zeteox.taskit.util.TaskData;
 
 import java.util.Objects;
 
 public class TaskItAddScreen extends TaskItMainScreen {
+    private TaskTypes selectedTaskType = TaskTypes.CUSTOM;
 
     private static final Logger log = LoggerFactory.getLogger(TaskItAddScreen.class);
 
     public TaskItAddScreen(Text title, Screen parent) {
-        super(title, parent);
+        super(title, parent, 0);
     }
 
     @Override
@@ -33,6 +35,14 @@ public class TaskItAddScreen extends TaskItMainScreen {
                 Text.literal("Task Name"));
         taskNameWidget.setPlaceholder(Text.of("Task name..."));
 
+        CyclingButtonWidget<TaskTypes> taskTypeWidget = CyclingButtonWidget.builder(TaskTypes::getName)
+                .values(TaskTypes.values())
+                .initially(TaskTypes.CUSTOM)
+                .build((width/2)-42, this.height / 4 + 44, 84, 20, Text.literal("Task Type"), (button, taskType) -> {
+                    this.selectedTaskType = taskType;
+                });
+        this.addDrawableChild(taskTypeWidget);
+
         TextFieldWidget numberToDoWidget = new TextFieldWidget(
                 this.textRenderer,
                 (width/2)-42,
@@ -41,6 +51,7 @@ public class TaskItAddScreen extends TaskItMainScreen {
                 15,
                 Text.literal("Number"));
         numberToDoWidget.setPlaceholder(Text.of("How many time?"));
+        numberToDoWidget.setMaxLength(9);
 
         ButtonWidget buttonWidget = ButtonWidget.builder(Text.of("add"), (btn) -> {
             try {
@@ -49,12 +60,12 @@ public class TaskItAddScreen extends TaskItMainScreen {
                 } else {
                     Task task = new Task(
                             taskNameWidget.getText(),
-                            TaskTypes.MINING,
+                            this.selectedTaskType,
                             Integer.parseInt(numberToDoWidget.getText()),
                             0,
                             false,
                             false);
-                    TaskData.addTask( (IEntityDataSaver) MinecraftClient.getInstance().player, task);
+                    ModClientConfig.addTask(task);
                     this.parent.init(MinecraftClient.getInstance(), this.width, this.height);
                     MinecraftClient.getInstance().setScreen(this.parent);
                 }
