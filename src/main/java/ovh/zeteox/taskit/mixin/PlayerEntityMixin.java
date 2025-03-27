@@ -48,35 +48,4 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             }
         }
     }
-
-    @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at = @At("HEAD"))
-    private void onDropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if (player.getWorld().isClient) {
-            List<Task> tasks = ModClientConfig.getTasks();
-            for (Task task : tasks) {
-                if (task.getTaskType() == TaskTypes.DROPPING) {
-                    task.addNumber(1);
-                    TaskIt.LOGGER.info("Dropped item: {}", stack.getName().getString());
-                }
-                ModClientConfig.updateTasks(tasks);
-            }
-        }
-    }
-
-    @Inject(method = "interact", at = @At("HEAD"))
-    private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        if (this.getWorld().isClient) {
-            ItemStack itemStack = this.getStackInHand(hand);
-            if (entity instanceof AnimalEntity && ((AnimalEntity) entity).isBreedingItem(itemStack) && ((AnimalEntity) entity).canEat()) {
-                List<Task> tasks = ModClientConfig.getTasks();
-                for (Task task : tasks) {
-                    if (task.getTaskType() == TaskTypes.FEEDING) {
-                        task.addNumber(1);
-                    }
-                }
-                ModClientConfig.updateTasks(tasks);
-            }
-        }
-    }
 }

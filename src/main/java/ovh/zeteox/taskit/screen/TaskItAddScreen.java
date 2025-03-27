@@ -2,10 +2,8 @@ package ovh.zeteox.taskit.screen;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,8 @@ import java.util.Objects;
 
 public class TaskItAddScreen extends TaskItMainScreen {
     private TaskTypes selectedTaskType = TaskTypes.CUSTOM;
-
+    private Item selectedItem;
+    private TaskItItemSelectionScreen selectionScreen;
     private static final Logger log = LoggerFactory.getLogger(TaskItAddScreen.class);
 
     public TaskItAddScreen(Text title, Screen parent) {
@@ -28,7 +27,7 @@ public class TaskItAddScreen extends TaskItMainScreen {
     protected void init() {
         TextFieldWidget taskNameWidget = new TextFieldWidget(
                 this.textRenderer,
-                (width/2)-42,
+                (width / 2) - 42,
                 this.height / 4 + 24 + -16,
                 84,
                 15,
@@ -38,14 +37,23 @@ public class TaskItAddScreen extends TaskItMainScreen {
         CyclingButtonWidget<TaskTypes> taskTypeWidget = CyclingButtonWidget.builder(TaskTypes::getName)
                 .values(TaskTypes.values())
                 .initially(TaskTypes.CUSTOM)
-                .build((width/2)-42, this.height / 4 + 44, 84, 20, Text.literal("Task Type"), (button, taskType) -> {
+                .omitKeyText()
+                .build((width / 2) - 43, this.height / 4 + 34, 60, 20, Text.literal(""), (button, taskType) -> {
                     this.selectedTaskType = taskType;
                 });
         this.addDrawableChild(taskTypeWidget);
 
+        ButtonWidget selectItemBtn = ButtonWidget.builder(Text.of("Select Item"), (btn) -> {
+            this.selectionScreen = new TaskItItemSelectionScreen(Text.of("Select Item"), this, () -> {
+                this.selectedItem = this.selectionScreen.getSelectedItem();
+            });
+            MinecraftClient.getInstance().setScreen(selectionScreen);
+        }).dimensions(width / 2 - 42, this.height / 4 + 94, 84, 20).build();
+        this.addDrawableChild(selectItemBtn);
+
         TextFieldWidget numberToDoWidget = new TextFieldWidget(
                 this.textRenderer,
-                (width/2)-42,
+                (width / 2) - 42,
                 this.height / 4 + 64,
                 84,
                 15,
@@ -69,12 +77,11 @@ public class TaskItAddScreen extends TaskItMainScreen {
                     this.parent.init(MinecraftClient.getInstance(), this.width, this.height);
                     MinecraftClient.getInstance().setScreen(this.parent);
                 }
-            }catch (Exception ignored) {
+            } catch (Exception ignored) {
                 log.error("e: ", ignored);
                 MinecraftClient.getInstance().player.sendMessage(Text.of("Can't create the task wrong input"), false);
             }
-        }).dimensions(width/2-10, ((height+guiHeight)/2)-28, 25, 20).build();
-
+        }).dimensions(width / 2 - 10, ((height + guiHeight) / 2) - 28, 25, 20).build();
 
         this.addDrawableChild(taskNameWidget);
         this.addDrawableChild(numberToDoWidget);
