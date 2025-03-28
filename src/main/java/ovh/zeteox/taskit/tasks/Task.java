@@ -1,5 +1,6 @@
 package ovh.zeteox.taskit.tasks;
 
+import net.minecraft.item.Item;
 import ovh.zeteox.taskit.config.ModClientConfig;
 
 import java.util.List;
@@ -12,14 +13,16 @@ public class Task {
     private int actualNumber;
     private boolean pined;
     private boolean completed;
+    private final String taskItem;
 
-    public Task(String taskName, TaskTypes type, int numberToDo, int actualNumber, boolean pined, boolean completed) {
+    public Task(String taskName, TaskTypes type, int numberToDo, int actualNumber, boolean pined, boolean completed, String taskItem) {
         this.taskName = taskName;
         this.type = type;
         this.numberToDo = numberToDo;
         this.actualNumber = actualNumber;
         this.pined = pined;
         this.completed = completed;
+        this.taskItem = taskItem;
     }
 
     public String getTaskName() {
@@ -77,6 +80,10 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public String getTaskItem() {
+        return taskItem;
     }
 
     @Override

@@ -41,7 +41,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         if (world.isClient) {
             List<Task> tasks = ModClientConfig.getTasks();
             for (Task task : tasks) {
-                if (task.getTaskType() == TaskTypes.EATING) {
+                if (task.getTaskType() == TaskTypes.EATING && task.getTaskItem().equals(item.getItem().getName().toString())) {
                     task.addNumber(1);
                 }
                 ModClientConfig.updateTasks(tasks);

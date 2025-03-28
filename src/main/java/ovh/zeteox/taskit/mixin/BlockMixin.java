@@ -14,6 +14,7 @@ import ovh.zeteox.taskit.tasks.Task;
 import ovh.zeteox.taskit.tasks.TaskTypes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(Block.class)
 public class BlockMixin {
@@ -23,7 +24,7 @@ public class BlockMixin {
         if (world.isClient) {
             List<Task> tasks = ModClientConfig.getTasks();
             for (Task task : tasks) {
-                if (task.getTaskType() == TaskTypes.BREAKING) {
+                if (task.getTaskType() == TaskTypes.BREAKING && Objects.equals(task.getTaskItem(), state.getBlock().asItem().getName().toString())) {
                     task.addNumber(1);
                 }
                 ModClientConfig.updateTasks(tasks);

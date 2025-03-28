@@ -75,7 +75,8 @@ public class TaskItAddScreen extends TaskItMainScreen {
                             Integer.parseInt(numberToDoWidget.getText()),
                             0,
                             false,
-                            false);
+                            false,
+                            this.selectedItem.getName().toString());
                     ModClientConfig.addTask(task);
                     this.parent.init(MinecraftClient.getInstance(), this.width, this.height);
                     MinecraftClient.getInstance().setScreen(this.parent);
