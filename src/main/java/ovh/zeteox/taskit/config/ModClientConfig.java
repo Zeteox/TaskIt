@@ -11,13 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * {@code ModClientConfig} is a class that permit to manage the mod config file
+ * and the tasks in it.
+ */
 public class ModClientConfig {
     private static final String MOD_CONFIG = "config/taskitconfig.json";
     private static List<Task> tasks = new ArrayList<>();
 
     /**
-     * {@code saveConfig()} is a method of the ModClientConfig class that permit
-     * to save the mod data in the config file
+     * {@code saveConfig()} is a method of the {@link ModClientConfig} class that permit
+     * to save the mod data in the config file.
      */
     public static void saveConfig() {
         HashMap<String, List<Task>> taskMap = new HashMap<>();
@@ -34,8 +38,8 @@ public class ModClientConfig {
     }
 
     /**
-     * {@code loadConfig()} is a method from the ModClientConfig class that permit
-     * to load the configs or initialize it.
+     * {@code loadConfig()} is a method from the {@link ModClientConfig} class that permit
+     * to load the config files or initialize them to use them.
      */
     public static void loadConfig() {
         File configFile = new File(MOD_CONFIG);
@@ -46,33 +50,58 @@ public class ModClientConfig {
 
         try (FileReader reader = new FileReader(configFile)) {
             Gson gson = new Gson();
+            // Use TypeToken to specify the type of the object to get a Hashmap from the JSON
             Type type = new TypeToken<HashMap<String, List<Task>>>(){}.getType();
-            HashMap<String, Object> config = gson.fromJson(reader, type);
+            HashMap<String, List<Task>> config = gson.fromJson(reader, type);
 
-            tasks = (List<Task>) config.get("tasks");
+            tasks = config.get("tasks");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * {@code addTasks()} is a method from the {@link ModClientConfig} class that permit
+     * to add a task to the tasks list saved in the config file.
+     *
+     * @param task {@code Task} to add in the config file
+     */
     public static void addTask(Task task) {
         loadConfig();
         tasks.add(task);
         saveConfig();
     }
 
+    /**
+     * {@code removeTask()} is a method from the {@link ModClientConfig} class that permit
+     * to remove a task from the tasks list saved in the config file.
+     *
+     * @param task {@code Task} to remove from the config file
+     */
     public static void removeTask(Task task) {
         loadConfig();
         tasks.remove(task);
         saveConfig();
     }
 
+    /**
+     * {@code getTasks()} is a method from the {@link ModClientConfig} class that permit
+     * to get the tasks list saved in the config file.
+     *
+     * @return {@code List<Task>} the tasks list saved in the config file
+     */
     public static List<Task> getTasks() {
         loadConfig();
         return tasks;
     }
 
+    /**
+     * {@code updateTasks()} is a method from the {@link ModClientConfig} class that permit
+     * to update the config file with the given list of tasks.
+     *
+     * @param updTasks {@code List<Task>} to put in the config file
+     */
     public static void updateTasks(List<Task> updTasks) {
         tasks = updTasks;
         saveConfig();
