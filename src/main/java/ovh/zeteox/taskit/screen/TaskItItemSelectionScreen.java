@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import ovh.zeteox.taskit.tasks.TaskTypes;
 
 import java.util.ArrayList;
 import java.util.List;
