@@ -1,4 +1,4 @@
-# TaskIt - DELPRAT Loïc
+# TaskIt - Zeteox
 
 ## Description
 TaskIt is a Minecraft mod that allows you to create tasks and assign them to players.
